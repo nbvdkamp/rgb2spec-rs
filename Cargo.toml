@@ -1,0 +1,23 @@
+[package]
+name = "rgb2spec"
+version = "0.1.0"
+description = "Converts RGB colors to reflectance spectra"
+repository = "https://github.com/nbvdkamp/rgb2spec-rs"
+edition = "2021"
+readme = "README.md"
+license = "BSD-3-Clause"
+exclude = ["output"]
+keywords = ["rgb", "spectrum", "convert", "rendering"]
+categories = ["graphics", "science", "command-line-utilities"]
+
+[lib]
+name = "rgb2spec"
+path = "src/rgb2spec.rs"
+
+[[bin]]
+name = "optimize"
+path = "src/optimize-cli.rs"
+
+[[example]]
+name = "load"
+path = "examples/load.rs"
