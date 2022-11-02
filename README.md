@@ -1,5 +1,9 @@
 # rgb2spec-rs
 
+<a href="https://crates.io/crates/rgb2spec">
+    <img src="https://img.shields.io/crates/v/rgb2spec.svg" alt="crates.io">
+</a>
+
 This crate is a port of [rgb2spec](https://github.com/mitsuba-renderer/rgb2spec), an implementation of the paper ["A Low-Dimensional Function Space for Efficient Spectral Upsampling"](http://rgl.epfl.ch/publications/Jakob2019Spectral) by Wenzel Jakob and Johannes Hanika.
 
 It can be used to convert RGB colors in various color spaces to coefficent representations of reflectance spectra. These spectra can then be evaluated for wavelengths in the visible spectrum.
