@@ -10,7 +10,7 @@ It can be used to convert RGB colors in various color spaces to coefficent repre
 
 ### Usage
 
-See the [crate documentation](https://docs.rs/) or `examples/` for example usages.
+See the [crate documentation](https://docs.rs/rgb2spec) or `examples/` for example usages.
 
 ### CLI
 The crate also includes a command line program that can be used to compute a model and save it to a file. Use `cargo run` in the crate's root to execute it.
