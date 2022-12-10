@@ -1,6 +1,6 @@
 [package]
 name = "rgb2spec"
-version = "0.1.0"
+version = "0.1.1"
 description = "Converts RGB colors to reflectance spectra"
 repository = "https://github.com/nbvdkamp/rgb2spec-rs"
 edition = "2021"

@@ -62,19 +62,31 @@ impl RGB2Spec {
     /// Returns a [std::io::Error] if the file cannot be opened or does not comply with the format.
     pub fn load<P: AsRef<Path>>(path: P) -> Result<RGB2Spec, Error> {
         let mut file = File::open(path)?;
+        RGB2Spec::from_reader(&mut file)
+    }
 
+    /// Loads a [RGB2Spec] model from a reader.
+    ///
+    /// The binary format is compatible with the [original implementation](https://github.com/mitsuba-renderer/rgb2spec).
+    ///
+    /// Because the binary format doesn't contain information on which [Gamut](optimize::Gamut)
+    /// was used to generate the model there is no interface to retrieve this.
+    /// When this information is required the user will need to keep track of it manually.
+    ///
+    /// Returns a [std::io::Error] if the reader cannot be read or does not comply with the format.
+    pub fn from_reader<R: Read>(reader: &mut R) -> Result<RGB2Spec, Error> {
         let mut header = [0; 4];
-        file.read_exact(&mut header)?;
+        reader.read_exact(&mut header)?;
 
         if std::str::from_utf8(&header) != Ok("SPEC") {
             return Err(Error::new(
                 ErrorKind::InvalidData,
-                "File header is not correct. (Expected SPEC as bytes)",
+                "Header is not correct. (Expected SPEC as bytes)",
             ));
         }
 
         let mut resolution = [0; 4];
-        file.read_exact(&mut resolution)?;
+        reader.read_exact(&mut resolution)?;
         let resolution = u32::from_le_bytes(resolution);
 
         let res = resolution as usize;
@@ -92,8 +104,8 @@ impl RGB2Spec {
         let mut scale = vec![0_u8; res * std::mem::size_of::<f32>()];
         let mut data = vec![0_u8; data_len * std::mem::size_of::<f32>()];
 
-        file.read_exact(&mut scale)?;
-        file.read_exact(&mut data)?;
+        reader.read_exact(&mut scale)?;
+        reader.read_exact(&mut data)?;
 
         let scale = scale
             .chunks_exact(std::mem::size_of::<f32>())
@@ -123,11 +135,19 @@ impl RGB2Spec {
     /// Returns a [std::io::Error] if the file cannot be written to.
     pub fn save<P: AsRef<Path>>(&self, path: P) -> Result<(), Error> {
         let mut file = File::create(path)?;
+        self.to_writer(&mut file)
+    }
 
-        file.write_all("SPEC".as_bytes())?;
-        file.write_all(&self.resolution.to_le_bytes())?;
+    /// Writes the model to a writer.
+    ///
+    /// The binary format is compatible with the [original implementation](https://github.com/mitsuba-renderer/rgb2spec).
+    ///
+    /// Returns a [std::io::Error] if the writer cannot be written to.
+    pub fn to_writer<W: Write>(&self, writer: &mut W) -> Result<(), Error> {
+        writer.write_all("SPEC".as_bytes())?;
+        writer.write_all(&self.resolution.to_le_bytes())?;
 
-        file.write_all(
+        writer.write_all(
             &self
                 .scale
                 .iter()
@@ -135,7 +155,7 @@ impl RGB2Spec {
                 .collect::<Vec<_>>(),
         )?;
 
-        file.write_all(
+        writer.write_all(
             &self
                 .data
                 .iter()
