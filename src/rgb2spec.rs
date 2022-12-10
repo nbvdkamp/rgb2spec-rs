@@ -60,10 +60,7 @@ impl RGB2Spec {
     /// When this information is required the user will need to keep track of it manually.
     ///
     /// Returns a [std::io::Error] if the file cannot be opened or does not comply with the format.
-    pub fn load<P>(path: P) -> Result<RGB2Spec, Error>
-    where
-        P: AsRef<Path>,
-    {
+    pub fn load<P: AsRef<Path>>(path: P) -> Result<RGB2Spec, Error> {
         let mut file = File::open(path)?;
 
         let mut header = [0; 4];
@@ -124,10 +121,7 @@ impl RGB2Spec {
     /// The binary format is compatible with the [original implementation](https://github.com/mitsuba-renderer/rgb2spec).
     ///
     /// Returns a [std::io::Error] if the file cannot be written to.
-    pub fn save<P>(&self, path: P) -> Result<(), Error>
-    where
-        P: AsRef<Path>,
-    {
+    pub fn save<P: AsRef<Path>>(&self, path: P) -> Result<(), Error> {
         let mut file = File::create(path)?;
 
         file.write_all("SPEC".as_bytes())?;
